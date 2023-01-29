@@ -22,3 +22,10 @@ Taskwarrior solves #2 and #3 but does not have a good browser based frontend. My
 So the options were either to build a CLI to tiddlywiki, & build a plugin for vim+vimwiki or build a great front end for taskwarrior.
 
 For a long time I wanted to learn svelte and recently discovered FastAPI. So guess which itch I decided to scratch.
+
+
+# Other Itch that I may(or may not) scratch someday
+
+* Integrate taskjuggler tasks to have a single combined visualization
+* Add a meeting mode to capture discussions and new AI's
+* Do somekind of multiuser hosted frontend where others can see and annotate tasks assigned to them.
