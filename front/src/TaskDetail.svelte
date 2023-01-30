@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 	export let task,projects,people;
 	const dispatch = createEventDispatcher();
@@ -8,32 +9,46 @@
 	let contexts=[];
         var gtd,difficulty,priority;
         function toggleTaskDetail(){ dispatch('toggle',{text:'toggle'}) }
-        function TagStyle(tsk,tg){
-                let rv="btn btn-light btn-sm";
-                        if(tsk['tags']){
-                                tsk['tags'].forEach((t)=>{if(t==tg){rv="btn btn-dark btn-sm";}});
-                        }
-                        return rv;
-        }
+	onMount(() => {context_arr.forEach(x=>{
+		if(task['tags']){
+		if(task['tags'].find(y=>x==y)){
+			contexts.push(x)
+		}
+		}
+	})});
+	function TagStyle(tsk,tg){
+		let rv="btn btn-light btn-sm";
+			if(tsk['tags']){
+				tsk['tags'].forEach((t)=>{if(t==tg){rv="btn btn-dark btn-sm";}});
+			}
+			return rv;
+	}
 	function hasTag(tag){
 		if(task['tags']){
-		return task['tags'].find(t=>t==tag)
+			return task['tags'].find(t=>t==tag)
 		}
 		return false;
 	}
 	function save(){
                 let tags=[];
-                task['tags'];
+                // task['tags'];
+		console.log(contexts);
                 if(task['tags']){tags=tags.concat(task['tags']);}
                 context_arr.forEach( a=>{
                         let tagMatch=tags.find(x=>x==a);
                         let ctxMatch=contexts.find(x=>x==a);
                         if(ctxMatch && !tagMatch){tags.push(a)}
-                        if(!ctxMatch && tagMatch){ tags=tags.filter(x=>(x==a))}
+			if(!ctxMatch && tagMatch){ tags=tags.filter(x=>(x!=a));console.log("post filter",a,tags)}
                 });
                 task['tags']=tags;
 		console.log(task,difficulty,priority)
                 editable=false;
+		 fetch(
+			'/saveTask', {
+				method: "POST",
+				body: JSON.stringify(task),
+				headers: { "content-type": "application/json" }
+			});
 	}
 </script>
 
@@ -52,8 +67,8 @@
 		</div>
 		<div class="col-2">Project: <select bind:value={task['project']}>{#each projects as p}<option value={p['project']}>{p['project']}</option>{/each} </div>
                 <div class="col-2">Assigned: <select bind:value={task['assign']}>{#each people as p}{console.log(p)}<option value={p}>{p}</option>{/each}</select></div>
-                <div class="col-2">Difficulty:  <select bind:value={difficulty} ><option value="Low">Low</option><option value="High">High</option></select></div> , 
-                <div class="col-2">Priority:  <select bind:value={priority} ><option value="Low">Low</option><option value="High">High</option></select></div> , 
+                <div class="col-2">Difficulty:  <select bind:value={task['difficulty']} ><option value="Low">Low</option><option value="High">High</option></select></div> , 
+                <div class="col-2">Priority:  <select bind:value={task['priority']} ><option value="Low">Low</option><option value="High">High</option></select></div> , 
                 <div class="col-2">Due </div> <div class="col-2"><input type="datetime-local" bind:value={task['due']}> </div> 
 	</div> 
 	<div class="row"> 
@@ -102,8 +117,7 @@
 		<div class="col-11" >
 			{#each context_arr as ctx}
 				{#if (hasTag(ctx))}
-					{hasTag(ctx)}
-					<i> @{ctx}</i> 
+					<i> @{ctx} </i> 
 				{/if}
 			{/each}
 		</div>

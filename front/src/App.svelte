@@ -27,7 +27,7 @@
 		getProjects();
 	});
 	function forceRedraw(){
-		console.log("force redraw");
+		//console.log("force redraw");
 		tasks=tasks;
 	}
 
@@ -79,14 +79,14 @@
 		waitingTasks=waitingTasks;
 		futureTasks=futureTasks;
 		nextTasks=nextTasks;
-			console.log(selectedProjects,"inbox ",inboxTasks,"future=",futureTasks,"Next",nextTasks,"subprojects",subProjects,"assign",waitingTasks);
+			// console.log(selectedProjects,"inbox ",inboxTasks,"future=",futureTasks,"Next",nextTasks,"subprojects",subProjects,"assign",waitingTasks);
 	}
 	function hasActiveChild(tsk){
 		let rv=false;
 		if(tsk['depends']){
 			rv=tsk['depends'].find((uuid)=>{
 				return tasks['pending'].find((task)=> {
-					console.log( task['uuid'],uuid,task['uuid']==uuid);
+					// console.log( task['uuid'],uuid,task['uuid']==uuid);
 					return task['uuid']==uuid;
 				}
 				)

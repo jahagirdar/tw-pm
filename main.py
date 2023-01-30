@@ -58,9 +58,54 @@ class NewTask(BaseModel):
     project: str
 
 
+class Annotation(BaseModel):
+    entry: str
+    description: str
+
+
+class Task(BaseModel):
+    uuid: str
+    id: int
+    assign: str = None
+    description: str
+    due: str = None
+    entry: str
+    modified: str
+    project: str = None
+    status: str = None
+    tags: list[str] = None
+    urgency: int = None
+    annotations: list[Annotation] = None
+
+
 class OneAnnotation(BaseModel):
     uuid: str
     annotation: str
+
+
+@app.post("/saveTask")
+def saveTask(task: Task):
+    tw = TaskWarrior()
+    id, t = tw.get_task(uuid=task.uuid)
+    uuid: str
+    if task.assign:
+        t['assign'] = task.assign
+    if task.description:
+        t['description'] = task.description
+    if task.due:
+        t['due'] = datetime.datetime.strptime(task.due, "%Y-%m-%dT%H:%M")
+    if task.project:
+        t['project'] = task.project
+    if task.status:
+        t['status'] = task.status
+    if task.tags:
+        t['tags'] = task.tags
+    # if task.urgency:
+    #     int = None
+    # if task.annotations:
+    #     list[Annotation] = None
+    tw.task_update(t)
+    return t
 
 
 @app.post("/newTask")
