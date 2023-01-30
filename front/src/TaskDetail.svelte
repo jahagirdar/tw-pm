@@ -48,7 +48,9 @@
 				method: "POST",
 				body: JSON.stringify(task),
 				headers: { "content-type": "application/json" }
-			});
+			})
+                        .then(d=>d.text())
+			.then(d=>{ console.log(JSON.parse(d))});
 	}
 </script>
 
@@ -58,7 +60,7 @@
 	{#if editable}
 		<h5 class="card-header">
 		<input type="text" bind:value={task['description']} placeholder="Task Title"/>
-		<button type="button" class="btn-close text-right" aria-label="Close" on:click={()=>editable=false}> </button> </h5>  
+		<button type="button" class="btn-close float-end" aria-label="Close" on:click={()=>editable=false}> </button> </h5>  
 	<div class="row"> 
 		<div class="col-2">
 			<input type="radio" bind:group={task['tags']} name="Next" value="Next">Next

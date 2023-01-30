@@ -8,6 +8,7 @@ from typing import List
 from pydantic import BaseModel
 import json
 logger = logging.getLogger("fastapi")
+logger.setLevel(logging.INFO)
 app = FastAPI()
 app.mount("/front", StaticFiles(directory="front/public", html=True), name="front")
 app.mount("/build", StaticFiles(directory="front/public/build"), name="build")
@@ -69,6 +70,7 @@ class Task(BaseModel):
     assign: str = None
     description: str
     due: str = None
+    effort: str = None
     entry: str
     modified: str
     project: str = None
@@ -100,11 +102,16 @@ def saveTask(task: Task):
         t['status'] = task.status
     if task.tags:
         t['tags'] = task.tags
+    if task.effort:
+        t['effort'] = task.effort
     # if task.urgency:
     #     int = None
     # if task.annotations:
     #     list[Annotation] = None
+    logger.info(f"Before update= {t}")
     tw.task_update(t)
+    id, x = tw.get_task(uuid=task.uuid)
+    logger.info(f"After update= {x}")
     return t
 
 
